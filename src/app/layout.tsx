@@ -1,26 +1,26 @@
-import { FlatCompat } from "@eslint/eslintrc";
-import simpleImportSort from "eslint-plugin-simple-import-sort";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+import "./globals.css";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
+const poppins = Poppins({
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  subsets: ["latin"],
 });
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-  {
-    plugins: {
-      "simple-import-sort": simpleImportSort,
-    },
-    rules: {
-      "simple-import-sort/imports": "error",
-      "simple-import-sort/exports": "error",
-    },
-  },
-];
+export const metadata: Metadata = {
+  title: "FSW Donalds",
+  description: "Bora finalizar esse projeto lindo!",
+};
 
-export default eslintConfig;
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body className={`${poppins.className} antialiased`}>{children}</body>
+    </html>
+  );
+}
