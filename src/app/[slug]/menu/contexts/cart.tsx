@@ -14,14 +14,14 @@ export interface ICartContext {
   isOpen: boolean;
   products: CartProduct[];
   toggleCart: () => void;
-  addProduct: (product: CartProduct) => void
+  addProduct: (product: CartProduct) => void;
 }
 
 export const CartContext = createContext<ICartContext>({
   isOpen: false,
   products: [],
   toggleCart: () => {},
-  addProduct: () => {}
+  addProduct: () => {},
 });
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
@@ -33,7 +33,27 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const addProduct = (product: CartProduct) => {
-    setProducts((prev) => [...prev, product])
+    // verificar se o product ja esta no carrinho
+    // se estiver aumente sua quantitade
+    // se nao estiver, adicione
+    const productIsAlreadOnTheCart = products.some(
+      (prevProduct) => prevProduct.id == product.id,
+    );
+    if (!productIsAlreadOnTheCart) {
+      return setProducts((prev) => [...prev, product]);
+    }
+
+    setProducts((prevProducts) => {
+      return prevProducts.map((prevProduct) => {
+        if (prevProduct.id == product.id) {
+          return {
+            ...prevProduct,
+            quantity: prevProduct.quantity + product.quantity,
+          };
+        }
+        return prevProduct
+      });
+    });
   };
   return (
     <CartContext.Provider
@@ -41,7 +61,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         isOpen: isOpen,
         products: products,
         toggleCart: toggleCart,
-        addProduct: addProduct
+        addProduct: addProduct,
       }}
     >
       {children}
